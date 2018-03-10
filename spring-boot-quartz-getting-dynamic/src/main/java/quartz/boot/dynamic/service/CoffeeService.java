@@ -100,6 +100,11 @@ public class CoffeeService {
                 JobBuilder jb = oldJobDetail.getJobBuilder();
                 JobDetail newJobDetail = jb.usingJobData(jobDataMap).storeDurably().build();
                 scheduler.addJob(newJobDetail, true);
+
+                //TODO:Triggers, Trigger 트리거의 복수값으로 넘어오는 경우에 대한 확인 필요. 일단 배열의 0번째 값으로 셋팅하였으나 추후 개선 필요
+                Set<Trigger> triggersForJob = descriptor.buildTriggers();
+                scheduler.rescheduleJob(TriggerKey.triggerKey(name,group), (Trigger)descriptor.buildTriggers().toArray()[0]);
+
                 log.info("Updated job with key - {}", newJobDetail.getKey());
                 return;
             }
