@@ -9,6 +9,7 @@ import quartz.boot.dynamic.model.JobDescriptor;
 import quartz.boot.dynamic.service.CoffeeService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -26,7 +27,7 @@ public class HomeController {
     }
 
     @GetMapping(path = "/groups/{group}/jobs/list")
-    public Collection<JobDetail> listJob(@PathVariable String group) {
+    public Collection<Optional<JobDescriptor>> listJob(@PathVariable String group) {
         return coffeeService.listJob(group);
     }
 

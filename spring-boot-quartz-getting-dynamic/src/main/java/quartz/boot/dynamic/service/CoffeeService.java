@@ -2,17 +2,10 @@ package quartz.boot.dynamic.service;
 
 import static org.quartz.JobKey.jobKey;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,18 +33,41 @@ public class CoffeeService {
         return descriptor;
     }
 
-
-    //TODO:생성된 Job 리스트 조회
-    public Collection<JobDetail> listJob(String group) {
+    @Transactional(readOnly = true)
+    public Collection<Optional<JobDescriptor>> listJob(String group) {
         try{
-            System.out.println("dd");
+
+            Collection<Optional<JobDescriptor>> optionals = new ArrayList<>();
+
+            //TODO:Stream 활용
+            for (String groupName : scheduler.getJobGroupNames()) {
+                for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                    /*
+                    String jobName = jobKey.getName();
+                    String jobGroup = jobKey.getGroup();
+
+                    //get job's trigger
+                    List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+                    Date nextFireTime = triggers.get(0).getNextFireTime();
+
+                    System.out.println("[jobName] : " + jobName + " [groupName] : "
+                            + jobGroup + " - " + nextFireTime);
+
+                    */
+
+                    JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+                    if(Objects.nonNull(jobDetail)){
+                        optionals.add(Optional.of(JobDescriptor.buildDescriptor(jobDetail, scheduler.getTriggersOfJob(jobKey), scheduler.getTriggerState(TriggerKey.triggerKey(jobKey.getName(),group)))));
+                    }
+                }
+            }
+            System.out.println("데이터 조회");
+            return optionals;
         }
         catch (Exception e){
             throw new IllegalArgumentException(e.getLocalizedMessage());
         }
-        return null;
     }
-
 
 
     @Transactional(readOnly = true)
@@ -62,7 +78,7 @@ public class CoffeeService {
             if(Objects.nonNull(jobDetail))
                 return Optional.of(
                         JobDescriptor.buildDescriptor(jobDetail,
-                                scheduler.getTriggersOfJob(jobKey(name, group))));
+                                scheduler.getTriggersOfJob(jobKey(name, group)), scheduler.getTriggerState(TriggerKey.triggerKey(name,group))));
         } catch (SchedulerException e) {
             log.error("Could not find job with key - {}.{} due to error - {}", group, name, e.getLocalizedMessage());
         }

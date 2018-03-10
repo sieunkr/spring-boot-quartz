@@ -27,6 +27,9 @@ public class JobDescriptor {
     private List<String> to;
     private List<String> cc;
     private List<String> bcc;
+
+    private Trigger.TriggerState triggerState;
+
     private Map<String, Object> data = new LinkedHashMap<>();
     @JsonProperty("triggers")
     private List<TriggerDescriptor> triggerDescriptors = new ArrayList<>();
@@ -70,6 +73,12 @@ public class JobDescriptor {
         this.data = data;
         return this;
     }
+
+    public JobDescriptor setTriggerState(Trigger.TriggerState triggerState){
+        this.triggerState = triggerState;
+        return this;
+    }
+
 
     public JobDescriptor setTriggerDescriptors(final List<TriggerDescriptor> triggerDescriptors) {
         this.triggerDescriptors = triggerDescriptors;
@@ -121,7 +130,7 @@ public class JobDescriptor {
      * @return the JobDescriptor
      */
     @SuppressWarnings("unchecked")
-    public static JobDescriptor buildDescriptor(JobDetail jobDetail, List<? extends Trigger> triggersOfJob) {
+    public static JobDescriptor buildDescriptor(JobDetail jobDetail, List<? extends Trigger> triggersOfJob, Trigger.TriggerState triggerState) {
         // @formatter:off
         List<TriggerDescriptor> triggerDescriptors = new ArrayList<>();
 
@@ -138,7 +147,8 @@ public class JobDescriptor {
                 .setCc((List<String>)jobDetail.getJobDataMap().get("cc"))
                 .setBcc((List<String>)jobDetail.getJobDataMap().get("bcc"))
                 // .setData(jobDetail.getJobDataMap().getWrappedMap())
-                .setTriggerDescriptors(triggerDescriptors);
+                .setTriggerDescriptors(triggerDescriptors)
+                .setTriggerState(triggerState);
         // @formatter:on
     }
 }

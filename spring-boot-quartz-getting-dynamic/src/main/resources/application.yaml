@@ -1,5 +1,6 @@
 liquibase:
   enabled: false
+
 spring:
   jackson:
     serialization:
@@ -7,3 +8,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  datasource:
+    url: jdbc:mysql://&&&&:3306/quartz
+    username: root
+    password: 1234
