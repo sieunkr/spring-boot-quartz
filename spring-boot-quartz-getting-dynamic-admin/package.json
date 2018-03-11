@@ -1,0 +1,21 @@
+{
+  "name": "spring-boot-grunt-getting-started",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^3.0.0",
+    "jquery.1": "^1.0.0",
+    "vuejs": "^1.0.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0"
+  }
+}
