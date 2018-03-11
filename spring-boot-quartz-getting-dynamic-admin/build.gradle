@@ -15,19 +15,27 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-group = 'quartz.boot'
-version = '0.0.1.RELEASE'
+group = 'spring.boot'
+version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
 }
 
+
 dependencies {
-	compile("mysql:mysql-connector-java:5.1.34")
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-quartz')
+	compile('org.springframework.boot:spring-boot-starter-freemarker')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.projectlombok:lombok:1.16.18')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+task wrapper(type: Wrapper) {
+	gradleVersion = "4.0.1"
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

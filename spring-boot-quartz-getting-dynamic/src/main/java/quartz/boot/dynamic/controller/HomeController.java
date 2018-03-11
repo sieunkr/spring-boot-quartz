@@ -20,14 +20,17 @@ public class HomeController {
 
     private final CoffeeService coffeeService;
 
+    //@CrossOrigin(origins = "http://localhost:8084")
+    @CrossOrigin(origins = "*")
     @PostMapping(path = "/groups/{group}/jobs")
     public ResponseEntity<JobDescriptor> createJob(@PathVariable String group, @RequestBody JobDescriptor descriptor) {
 
         return new ResponseEntity<>(coffeeService.createJob(group, descriptor), CREATED);
     }
 
+    //TODO:Optional 클래스인 경우에는, Jsonp 리턴에서 present:true 로 리턴되는 문제로 인해서, Optional 클래스 제거했는데.. 추후에 확인 필요
     @GetMapping(path = "/groups/{group}/jobs/list")
-    public Collection<Optional<JobDescriptor>> listJob(@PathVariable String group) {
+    public Collection<JobDescriptor> listJob(@PathVariable String group) {
         return coffeeService.listJob(group);
     }
 

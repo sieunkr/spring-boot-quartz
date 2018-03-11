@@ -34,10 +34,10 @@ public class CoffeeService {
     }
 
     @Transactional(readOnly = true)
-    public Collection<Optional<JobDescriptor>> listJob(String group) {
+    public Collection<JobDescriptor> listJob(String group) {
         try{
 
-            Collection<Optional<JobDescriptor>> optionals = new ArrayList<>();
+            Collection<JobDescriptor> jobDescriptors = new ArrayList<>();
 
             //TODO:Stream 활용
             for (String groupName : scheduler.getJobGroupNames()) {
@@ -57,12 +57,13 @@ public class CoffeeService {
 
                     JobDetail jobDetail = scheduler.getJobDetail(jobKey);
                     if(Objects.nonNull(jobDetail)){
-                        optionals.add(Optional.of(JobDescriptor.buildDescriptor(jobDetail, scheduler.getTriggersOfJob(jobKey), scheduler.getTriggerState(TriggerKey.triggerKey(jobKey.getName(),group)))));
+                        //optionals.add(Optional.of(JobDescriptor.buildDescriptor(jobDetail, scheduler.getTriggersOfJob(jobKey), scheduler.getTriggerState(TriggerKey.triggerKey(jobKey.getName(),group)))));
+                        jobDescriptors.add((JobDescriptor.buildDescriptor(jobDetail, scheduler.getTriggersOfJob(jobKey), scheduler.getTriggerState(TriggerKey.triggerKey(jobKey.getName(),group)))));
                     }
                 }
             }
             System.out.println("데이터 조회");
-            return optionals;
+            return jobDescriptors;
         }
         catch (Exception e){
             throw new IllegalArgumentException(e.getLocalizedMessage());

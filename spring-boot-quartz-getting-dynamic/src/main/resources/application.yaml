@@ -9,6 +9,6 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-    url: jdbc:mysql://&&&&:3306/quartz
+    url: jdbc:mysql://$$$$:3306/quartz
     username: root
     password: 1234
