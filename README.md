@@ -1,18 +1,3 @@
-# spring-boot-quartz 샘플 소스
-
-### spring-boot-quartz-getting-started
-스프링 부트 쿼츠 연동 아주 심플한 예제
-
-### spring-boot-quartz-getting-dynamic	
-스프링 부트 쿼츠 연동 시, Job 을 동적으로 생성,제거 하는 로직 구현
-
-### spring-boot-quartz-getting-dynamic-admin
-스프링 부트 쿼츠 연동 시, Job 을 동적으로 생성,제거 하는 로직 구현 - 관리자화면
-
-
-
-
-
 # Quartz Scheduler With Spring Boot
 Quartz(쿼츠) 와 스프링 부트의 연동 방법 대해서 정리한다.
 
@@ -105,3 +90,19 @@ compile('org.springframework.boot:spring-boot-starter-data-jpa')
 ## 3. Scheduler
 작성 중...
 
+
+
+
+
+
+
+# spring-boot-quartz 샘플 소스
+
+### spring-boot-quartz-getting-started
+스프링 부트 쿼츠 연동 아주 심플한 예제
+
+### spring-boot-quartz-getting-dynamic	
+스프링 부트 쿼츠 연동 시, Job 을 동적으로 생성,제거 하는 로직 구현
+
+### spring-boot-quartz-getting-dynamic-admin
+스프링 부트 쿼츠 연동 시, Job 을 동적으로 생성,제거 하는 로직 구현 - 관리자화면
