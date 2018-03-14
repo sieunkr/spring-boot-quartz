@@ -93,6 +93,31 @@ compile('org.springframework.boot:spring-boot-starter-data-jpa')
 
 
 
+pauseJob 메서드에서
+해당 Job 에 연결되어있는 모든 트리거를 중지함
+
+트리거에 대한 상태라기 보다는, 
+잡에 대한 상태라는 개념이 맞을 듯한데, 
+
+실제로 필드값은 TriggerState 로 되어있어서 정확히 확인 필요
+
+``java
+public void pauseJob(final JobKey jobKey) throws JobPersistenceException {
+        executeInLock(
+            LOCK_TRIGGER_ACCESS,
+            new VoidTransactionCallback() {
+                public void executeVoid(Connection conn) throws JobPersistenceException {
+                    List<OperableTrigger> triggers = getTriggersForJob(conn, jobKey);
+                    for (OperableTrigger trigger: triggers) {
+                        pauseTrigger(conn, trigger.getKey());
+                    }
+                }
+            });
+    }
+``
+
+
+
 
 
 
