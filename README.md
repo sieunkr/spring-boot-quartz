@@ -101,7 +101,7 @@ pauseJob 메서드에서
 
 실제로 필드값은 TriggerState 로 되어있어서 정확히 확인 필요
 
-``java
+```java
 public void pauseJob(final JobKey jobKey) throws JobPersistenceException {
         executeInLock(
             LOCK_TRIGGER_ACCESS,
@@ -114,7 +114,7 @@ public void pauseJob(final JobKey jobKey) throws JobPersistenceException {
                 }
             });
     }
-``
+```
 
 
 
