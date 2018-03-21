@@ -180,6 +180,7 @@ L 문자는 일, 요일 필드에서만 허용이 된다.  일 필드에서는 �
 
 [참고 - http://www.quartz-scheduler.org/documentation/quartz-2.2.x/tutorials/tutorial-lesson-06.html](http://www.quartz-scheduler.org/documentation/quartz-2.2.x/tutorials/tutorial-lesson-06.html)
 
+[참고-http://www.baeldung.com/spring-quartz-schedule](http://www.baeldung.com/spring-quartz-schedule)
 
 ## 5. Spring Boot 2.0 에서의 Quartz
 
