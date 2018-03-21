@@ -4,7 +4,7 @@ Quartz(쿼츠) 와 스프링 부트의 연동 방법 대해서 정리한다.
 
 ## 1. 기본 개념 정리
 
-**Job**
+**Job**  
 실행해야 할 작업, Job 인터페이스는 execute 메서드를 정의한다. execute 메서드의 파라미터인 JobExecutionContext 에는 트리거 핸들링, 스케쥴에 의한 핸들링 등을 포함하여 런타임 환경에 대한 정보를 제공한다.
 
 ```java
@@ -16,10 +16,10 @@ public class CoffeeJob implements Job{
 	}
 ```
 
-**JobDetail**
+**JobDetail**  
 Job을 실행하기 위한 상세 정보, JobBuilder 에 의해서 생성된다.
 
-**JobBuilder**
+**JobBuilder**  
 JobBuilder는 빌더패턴으로 JobDetail 생성한다.
 ```java
 public JobDetail buildJobDetail() {  
@@ -32,11 +32,11 @@ public JobDetail buildJobDetail() {
 }
 ```
 
-**Trigger**
+**Trigger**  
 Job을 실행하기 위한 조건(작업 실행 주기, 횟수 등)
 다수의 Trigger 는 동일한 Job을 공유하여 지정할 수 있지만, 하나의 Trigger는 반드시 하나의 Job을 지정해야 한다.
 
-**TriggerBuilder**
+**TriggerBuilder**  
 TriggerBuilder 는 빌더패턴으로 트리거 객체를 생성한다.
 ```java
 @Bean
@@ -88,23 +88,32 @@ compile('org.springframework.boot:spring-boot-starter-data-jpa')
 > 자동으로 테이블 스키마가 생성되는 방법이 있을 것으로 추측(?)이 되나 정확한 방법은 아직 찾지 못하였다.
 
 ## 3. Scheduler
-작성 중...
+쿼츠 스케쥴러 인터페이스에 대한 내용 정리한다. 기본적으로 아래와 같이 선언한 후 사용가능하다. 
+
+```java
+private final Scheduler scheduler;
+```
+인터페이스에서 제공하는 메소드는 org.quartz 라이브러리에서 직접 확인 가능하다. 자주 사용하는 메소드만 간략하게 정리하였다.  사용은 scheduler.getJobGroupNames() 와 같이 사용하면 된다. 
 
 
+**JobDetail getJobDetail**  
+Job 을 조회한다. 
 
+**List\<String\> getJobGroupNames()**   
+Job 의 그룹 리스트를 조회
 
-pauseJob 메서드에서
-해당 Job 에 연결되어있는 모든 트리거를 중지함
+**List\<? extends Trigger\> getTriggersOfJob**  
+Job에 등록된 트리거 리스트를 조회한다. 
 
-트리거에 대한 상태라기 보다는, 
-잡에 대한 상태라는 개념이 맞을 듯한데, 
+**void scheduleJob**  
+Job 생성한다. 만약 기존에 존재한다면 덮어쓸지에 대한 값을 파라미터(replace)로 받는다. 파라미터가 true 라면, 기존 Job 이 업데이트 된다. 
 
-실제로 필드값은 TriggerState 로 되어있어서 정확히 확인 필요
-
+**void pauseJob**  
+Job을 중지한다. pauseJob 메서드에서 해당 Job 에 연결되어있는 모든 트리거를 중지한다. 트리거에 대한 상태라기 보다는, 잡에 대한 상태로 이해했었는데, 실제로 필드값은 TriggerState 로 되어있고 각 트리거에 상태값이 저장되어있다. 아래는 라이브러리의 소스이다. 참고만 하자.
 ```java
 public void pauseJob(final JobKey jobKey) throws JobPersistenceException {
         executeInLock(
-            LOCK_TRIGGER_ACCESS,
+            LOCK\_TRIGGER\_ACCESS,
             new VoidTransactionCallback() {
                 public void executeVoid(Connection conn) throws JobPersistenceException {
                     List<OperableTrigger> triggers = getTriggersForJob(conn, jobKey);
@@ -115,6 +124,10 @@ public void pauseJob(final JobKey jobKey) throws JobPersistenceException {
             });
     }
 ```
+
+**void resumeJob**  
+중지 되었던, Job을 재시작한다. 
+
 
 ## 4. Trigger
 Quartz(쿼츠)에서 사용하는 트리거의 종류는 아래와 같다. 
