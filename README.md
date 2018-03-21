@@ -184,13 +184,59 @@ L 문자는 일, 요일 필드에서만 허용이 된다.  일 필드에서는 �
 
 ## 5. Spring Boot 2.0 에서의 Quartz
 
+위에 설명하였지만, 스프링 부트 2.0 에서부터 Quartz 스타터를 디펜던시 추가하여 간결하게 쿼츠를 연동할 수 있다.  org.springframework.boot.autoconfigure.quartz 패키지를 확인해보자. 상단에 @ConfigurationProperties("spring.quartz") 선언 된 것을 확인할 수 있다. 위에 설명한 Properties 설정 값은 해당 클래스에 주입이 될 것이다. 
+
+```java
+spring.quartz.job-store-type=jdbc
+spring.quartz.jdbc.initialize-schema=always
+```
+그렇다면 해당 클래스에서 제공하지 않는 다른 Properties 값은 어떻게 설정할 수 있을까? 예를 들어서 쿼츠 잡의 쓰레드풀 설정을 하고 싶다면? 예전에는 아래와 같이 컨피그 설정을 따로 했었다. 
+
+```java
+//예전 방법
+@Configuration
+public class QuartzConfig {
+ 
+    @Value("${org.quartz.scheduler.instanceName}")
+    private String instanceName;
+    @Value("${org.quartz.scheduler.instanceId}")
+    private String instanceId;
+    @Value("${org.quartz.threadPool.threadCount}")
+    private String threadCount;
+    @Value("${job.startDelay}")
+    private Long startDelay;
+    @Value("${job.repeatInterval}")
+    private Long repeatInterval;
+ 
+    생략...
+```
+스프링 부트 2.0에서는 QuartzProperties 클래스에 properties 라는 필드가 있다.  커스텀하게 작성한 application.properties 파일에 쿼츠 설정 정보를 추가하면, 해당 설정 값이  QuartzProperties 클래스에 properties 주입되고,  QuartzAutoConfiguration 클래스 에서 SchedulerFactoryBean 을 생성하는 과정에서 아래와 같이 해당 속성값을 설정해 준다. 
+
+```java
+@Bean  
+@ConditionalOnMissingBean  
+public SchedulerFactoryBean quartzScheduler() {  
+   SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();  
+schedulerFactoryBean.setJobFactory(new AutowireCapableBeanJobFactory(  
+      this.applicationContext.getAutowireCapableBeanFactory()));  
+if (!this.properties.getProperties().isEmpty()) {  
+   schedulerFactoryBean  
+         .setQuartzProperties(asProperties(this.properties.getProperties()));  
+}
+      
+생략..
+```
+자, 그러면 가장 중요한 Properties 설정은 어떻게 하는가? prefix가 spring.quartz 이므로 아래 소스와 같이 작성한다.
+
+```java
+spring.quartz.properties.org.quartz.threadPool.threadCount=20
+```
+이렇게 추가하면 기존에 10개의 쓰레드로 동작되면 쿼츠 스케쥴러가 20개의 쓰레드에서 동작하게 된다. 해당 설정 말고 다른 설정값들도 동일하게 설정이 가능할 것이지만, 실제로 테스트는 못해봤다. 해당 방법이 옳은 방법인지에 대해서 명확하게 가이드가 없다. 
+
+> 혹시라도  자세히 아시는 분이 있다면 피드백 부탁드립니다...
+
 스프링 부트 2.0 에서의 Quartz 지원에 대해서는 레퍼런스 문서를 참고하자. 
 [https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-quartz](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-quartz)
-
-
-
-
-
 
 
 
