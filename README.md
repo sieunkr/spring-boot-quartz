@@ -257,6 +257,17 @@ spring.quartz.properties.org.quartz.threadPool.threadCount=20
 
 
 
+## 6. Dynamic Scheduler Job 생성
+기본적으로는 스프링 부트가 올라갈때 JobDetail 및 Trigger 빈이 생성이 되면서 스케쥴잡이 생성된다. 하지만, Runtime 중에 동적으로 잡을 추가하고 싶다면? 방법은... 의외로 심플하다. scheduler 인터페이스에서 생성하면 된다. 끝
+
+신규 Job 생성
+```java
+scheduler.scheduleJob(...
+```
+
+
+
+
 
 # spring-boot-quartz 샘플 소스
 
