@@ -91,8 +91,18 @@ compile('org.springframework.boot:spring-boot-starter-data-jpa')
 쿼츠 스케쥴러 인터페이스에 대한 내용 정리한다. 기본적으로 아래와 같이 선언한 후 사용가능하다. 
 
 ```java
-private final Scheduler scheduler;
+@RequiredArgsConstructor
+public class Class{
+	private final Scheduler scheduler;
+
+}
 ```
+아래와 같이 Field Inject 도 가능하지만 추천하지는 않는다.
+```java
+@Autowired
+private Scheduler scheduler;
+```
+
 인터페이스에서 제공하는 메소드는 org.quartz 라이브러리에서 직접 확인 가능하다. 자주 사용하는 메소드만 간략하게 정리하였다.  사용은 scheduler.getJobGroupNames() 와 같이 사용하면 된다. 
 
 
